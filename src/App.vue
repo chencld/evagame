@@ -2,7 +2,7 @@
  * @Author: lidan6
  * @Date: 2022-03-25 15:27:43
  * @LastEditors: lidan
- * @LastEditTime: 2022-04-02 17:55:08
+ * @LastEditTime: 2022-04-02 18:36:46
  * @Description: 
 -->
 <script setup>
@@ -41,6 +41,7 @@
     SpriteAnimationSystem
   } from "@eva/plugin-renderer-sprite-animation";
   import {PhysicsSystem, Physics, PhysicsType} from '@eva/plugin-matterjs';
+  import { Event, EventSystem, HIT_AREA_TYPE } from "@eva/plugin-renderer-event";
   import gameResource from './utils/resource.js'
   resource.addResource(gameResource);
   resource.on(LOAD_EVENT.START, () => {}) // 开始loader
@@ -145,9 +146,15 @@
       }),
     )
     game.scene.addChild(birdObject) 
+    const evt = game.scene.addComponent(
+      new Event({
+        type: HIT_AREA_TYPE.Rect,
+      })
+    );
+    evt.on("tap", () => {
+            birdPhysics.body.force.y = -0.62;
+    });
     birdPhysics.on('collisionStart', (gameObject1, gameObject2) => {
-      console.log(gameObject1)
-      console.log(gameObject2)
     });
 
   }
@@ -192,11 +199,12 @@
             open: true,
           },
         }),
+        new EventSystem()
       ]
     })
     createBg()
     createBird();
-    updateRender();
+    // updateRender();
   })
 
   const setRem = () => {
